@@ -32,8 +32,8 @@ in VertexData {
 	uniform vec3 fogColor;
 	uniform mat4 gbufferModelViewInverse, gbufferProjectionInverse;
 
-	float linear_step(float dist, float start, float end) {
-		return clamp((dist - start) / (end - start), 0.0, 1.0);
+	float linear_step(float edge0, float edge1, float x) {
+		return clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
 	}
 #endif
 
@@ -73,7 +73,7 @@ void main() {
 			// so we assume it's always 128 chunks (maximum Cloud Distance in Vanilla)
 			const float cloud_fog_end = 2048.0;
 
-			immut float visibility = linear_step(dist, cloud_fog_end, 0.0);
+			immut float visibility = linear_step(cloud_fog_end, 0.0, dist);
 			colortex0.a *= visibility;
 		#else
 			// todo!() make sure this matches Vanilla fog
@@ -81,8 +81,8 @@ void main() {
 
 			immut float cyl_dist = max(length(pe.xz), abs(pe.y));
 			immut float fog = max(
-				linear_step(dist, fogStart, fogEnd),
-				linear_step(cyl_dist, far - border_fog_start, far)
+				linear_step(fogStart, fogEnd, dist),
+				linear_step(far - border_fog_start, far, cyl_dist)
 			);
 
 			colortex0.rgb = mix(colortex0.rgb, fogColor, fog);
