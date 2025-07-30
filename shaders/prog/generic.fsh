@@ -77,12 +77,12 @@ void main() {
 			colortex0.a *= visibility;
 		#else
 			// todo!() make sure this matches Vanilla fog
-			const float border_fog_start = 16.0;
+			const float border_fog_relative_start = -16.0;
 
 			immut float cyl_dist = max(length(pe.xz), abs(pe.y));
 			immut float fog = max(
-				linear_step(fogStart, fogEnd, dist),
-				linear_step(far - border_fog_start, far, cyl_dist)
+				linear_step(fogStart, fogEnd, dist), // Spherical environment fog
+				linear_step(far + border_fog_relative_start, far, cyl_dist) // Cylidrical border fog
 			);
 
 			colortex0.rgb = mix(colortex0.rgb, fogColor, fog);
