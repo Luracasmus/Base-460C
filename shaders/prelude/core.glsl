@@ -1,8 +1,8 @@
 #version 460 core
 
 /*
-	// Clear needs to be enabled in dimensions where the sky geometry isn't rendered, such as in the nether
-	// we currently don't disable it in any dimension, even though it should be safe in the overworld and the end,
+	// Clear needs to be enabled in dimensions where the sky geometry isn't rendered, such as the nether
+	// We currently don't disable it in any dimension, even though it should be safe in the overworld and the end,
 	// as it would make the shader pack too complex, and possibly risk breaking some mods
 	const bool colortex0Clear = true;
 	const int colortex0Format = RGB8;
