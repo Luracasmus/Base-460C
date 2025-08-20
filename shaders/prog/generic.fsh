@@ -17,7 +17,7 @@
 
 in VertexData {
 	#ifdef TINT_ALPHA
-		layout(location = 0, component = 0) vec4 tint;Try to match vanilla line width (related to #4)
+		layout(location = 0, component = 0) vec4 tint;
 	#else
 		layout(location = 0, component = 0) vec3 tint;
 	#endif
