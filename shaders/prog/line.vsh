@@ -23,7 +23,7 @@ void main() {
 	vec3 start_ndc = start_clip.xyz / start_clip.w;
 	immut vec3 end_ndc = end_clip.xyz / end_clip.w;
 
-	const float line_width = 6.0; // todo!() make sure this matches Vanilla
+	const float line_width = 2.5; // TODO: make sure this matches Vanilla
 
 	immut vec2 view_size = vec2(viewWidth, viewHeight);
 	immut vec2 dir_screen = normalize((end_ndc.xy - start_ndc.xy) * view_size);
