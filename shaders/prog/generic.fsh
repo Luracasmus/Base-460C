@@ -17,7 +17,7 @@
 
 in VertexData {
 	#ifdef TINT_ALPHA
-		layout(location = 0, component = 0) vec4 tint;
+		layout(location = 0, component = 0) vec4 tint;Try to match vanilla line width (related to #4)
 	#else
 		layout(location = 0, component = 0) vec3 tint;
 	#endif
@@ -70,19 +70,19 @@ void main() {
 		#ifdef CLOUD_FOG
 			// Iris doesn't provide any uniforms for the cloud distance,
 			// and we don't want to be doing a bunch of stuff with atomics to calculate the distance to the furthest cloud vertices,
-			// so we assume it's always 128 chunks (maximum Cloud Distance in Vanilla)
+			// so we assume it's always 128 chunks (maximum Cloud Distance in vanilla)
 			const float cloud_fog_end = 2048.0;
 
 			immut float visibility = linear_step(cloud_fog_end, 0.0, dist);
 			colortex0.a *= visibility;
 		#else
-			// todo!() make sure this matches Vanilla fog
-			const float border_fog_relative_start = -16.0;
+			// TODO: make sure this matches vanilla fog
+			const float border_fog_start_ratio = 0.9;
 
 			immut float cyl_dist = max(length(pe.xz), abs(pe.y));
 			immut float fog = max(
 				linear_step(fogStart, fogEnd, dist), // Spherical environment fog
-				linear_step(far + border_fog_relative_start, far, cyl_dist) // Cylidrical border fog
+				linear_step(border_fog_start_ratio * far, far, cyl_dist) // Cylidrical border fog
 			);
 
 			colortex0.rgb = mix(colortex0.rgb, fogColor, fog);
