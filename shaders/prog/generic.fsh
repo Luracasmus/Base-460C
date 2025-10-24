@@ -76,13 +76,10 @@ void main() {
 			immut float visibility = linear_step(cloud_fog_end, 0.0, dist);
 			colortex0.a *= visibility;
 		#else
-			// TODO: make sure this matches vanilla fog
-			const float border_fog_start_ratio = 0.9;
-
 			immut float cyl_dist = max(length(pe.xz), abs(pe.y));
 			immut float fog = max(
 				linear_step(fogStart, fogEnd, dist), // Spherical environment fog
-				linear_step(border_fog_start_ratio * far, far, cyl_dist) // Cylidrical border fog
+				linear_step(far - clamp(0.1 * far, 4.0, 64.0), far, cyl_dist) // Cylidrical border fog
 			);
 
 			colortex0.rgb = mix(colortex0.rgb, fogColor, fog);
