@@ -57,8 +57,14 @@ void main() {
 	#endif
 
 	#ifdef LIGHT
-		// We bring 'vaUV2' from the range [8, 240] to [0.5/16.0, 15.5/16.0]
-		immut vec2 lm_coord = fma(vaUV2, vec2(15.0/3712.0), vec2(0.5/16.0 - 15.0/464.0));
+		#ifdef TERRAIN
+			// [8, 248] to [0.5/16.0, 15.5/16.0].
+			immut vec2 lm_coord = vec2(1.0/256.0) * vaUV2;
+		#else
+			// [0, 240] to [0.5/16.0, 15.5/16.0].
+			immut vec2 lm_coord = fma(vaUV2, vec2(0.00390625), vec2(0.03125));
+		#endif
+
 		v.tint.rgb *= textureLod(lightmap, lm_coord, 0.0).rgb;
 	#endif
 
