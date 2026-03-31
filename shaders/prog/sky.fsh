@@ -34,6 +34,6 @@ void main() {
 	colortex0 = sky(normalize(view));
 
 	if (renderStage == MC_RENDER_STAGE_STARS) {
-		colortex0 += unpackUnorm4x8(v.unorm4x8_tint).rgb; // todo!() this seems to differ a bit from Vanilla
+		colortex0 += unpackUnorm4x8(v.unorm4x8_tint).rgb; // TODO: this seems to differ a bit from Vanilla.
 	}
 }
