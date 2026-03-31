@@ -1,4 +1,8 @@
-#version 460 core
+#ifdef CORE_PROFILE
+	#version 460 core
+#else
+	#version 460 compatibility
+#endif
 
 /*
 	// Clear needs to be enabled in dimensions where the sky geometry isn't rendered, such as the nether

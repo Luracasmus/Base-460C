@@ -1,3 +1,4 @@
+#define CORE_PROFILE
 #include "/prelude/core.glsl"
 
 uniform float viewHeight, viewWidth;

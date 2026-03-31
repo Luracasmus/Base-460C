@@ -1,29 +1,12 @@
 #include "/prelude/core.glsl"
 
-uniform mat4 modelViewMatrix, projectionMatrix;
-
-#ifdef CHUNK_OFFSET
-	uniform vec3 chunkOffset;
-#endif
-
 #ifdef ENTITY_COLOR
 	uniform vec4 entityColor;
 #endif
 
-#ifdef TEXTURE
-	uniform mat4 textureMatrix;
-
-	in vec2 vaUV0;
-#endif
-
 #ifdef LIGHT
 	uniform sampler2D lightmap;
-
-	in ivec2 vaUV2;
 #endif
-
-in vec3 vaPosition;
-in vec4 vaColor;
 
 out VertexData {
 	#ifdef TINT_ALPHA
@@ -38,18 +21,14 @@ out VertexData {
 } v;
 
 void main() {
-	vec3 model = vaPosition;
+	vec3 model = vec3(gl_Vertex);
 
-	#ifdef CHUNK_OFFSET
-		model += chunkOffset;
-	#endif
-
-	gl_Position = proj_mmul(projectionMatrix, rot_trans_mmul(modelViewMatrix, model));;
+	gl_Position = proj_mmul(mat4(gl_ProjectionMatrix), rot_trans_mmul(mat4(gl_ModelViewMatrix), model));
 
 	#ifdef TINT_ALPHA
-		v.tint = vaColor;
+		v.tint = vec4(gl_Color);
 	#else
-		v.tint = vaColor.rgb;
+		v.tint = vec3(gl_Color);
 	#endif
 
 	#ifdef ENTITY_COLOR
@@ -57,18 +36,21 @@ void main() {
 	#endif
 
 	#ifdef LIGHT
-		#ifdef TERRAIN
-			// [8, 248] to [0.5/16.0, 15.5/16.0].
-			immut vec2 lm_coord = vec2(1.0/256.0) * vaUV2;
+		#if defined TERRAIN && MC_VERSION >= 12110 && IRIS_VERSION < 11006
+			// `gl_TextureMatrix[1]` is broken here.
+			// [8, 248] -> [0.5/16, 15.5/16]
+			immut vec2 scale = vec2(256.0);
+			immut vec2 offset = vec2(0.0);
 		#else
-			// [0, 240] to [0.5/16.0, 15.5/16.0].
-			immut vec2 lm_coord = fma(vaUV2, vec2(0.00390625), vec2(0.03125));
+			immut mat4 lm_tex_mat = mat4(gl_TextureMatrix[1]);
+			immut vec2 scale = vec2(lm_tex_mat[0].x, lm_tex_mat[1].y);
+			immut vec2 offset = vec2(lm_tex_mat[0].w, lm_tex_mat[1].w);
 		#endif
 
-		v.tint.rgb *= textureLod(lightmap, lm_coord, 0.0).rgb;
+		v.tint.rgb *= textureLod(lightmap, fma(vec2(gl_MultiTexCoord1), scale, offset), 0.0).rgb;
 	#endif
 
 	#ifdef TEXTURE
-		v.coord = rot_trans_mmul(textureMatrix, vaUV0);
+		v.coord = rot_trans_mmul(mat4(gl_TextureMatrix[0]), vec2(gl_MultiTexCoord0));
 	#endif
 }

@@ -1,3 +1,4 @@
+#define CORE_PROFILE
 #define TINT_ALPHA
 #define ALPHA_BLEND
 #define FOG

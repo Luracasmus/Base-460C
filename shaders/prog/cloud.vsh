@@ -8,5 +8,5 @@ void main() {
 	// The code that 'ftransform()' gets transformed into in 'gbuffers_clouds.vsh' is currently impossible to implement in the core profile
 	gl_Position = ftransform();
 
-	v.tint = gl_Color;
+	v.tint = vec4(gl_Color);
 }
