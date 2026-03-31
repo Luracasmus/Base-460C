@@ -1,4 +1,4 @@
-#define TEXTURE
-#define LIGHT
+#define TEXTURED
+#define LIT
 #define ENTITY_COLOR
 #include "/prog/generic.vsh"

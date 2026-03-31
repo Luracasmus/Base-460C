@@ -1,12 +1,11 @@
 #version 460 compatibility
 
-out VertexData {
-	layout(location = 0, component = 0) vec4 tint;
-} v;
+out
+#include "/lib/v_data_generic.glsl"
 
 void main() {
 	// The code that 'ftransform()' gets transformed into in 'gbuffers_clouds.vsh' is currently impossible to implement in the core profile
 	gl_Position = ftransform();
 
-	v.tint = vec4(gl_Color);
+	v.unorm4x8_tint = packUnorm4x8(vec4(gl_Color));
 }

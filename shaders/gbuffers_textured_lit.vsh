@@ -1,3 +1,3 @@
-#define TEXTURE
-#define LIGHT
+#define TEXTURED
+#define LIT
 #include "/prog/generic.vsh"

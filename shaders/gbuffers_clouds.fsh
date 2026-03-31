@@ -1,5 +1,4 @@
-#define TINT_ALPHA
-#define ALPHA_BLEND
+#define TRANSLUCENT
 #define FOG
 #define CLOUD_FOG
 #include "/prog/generic.fsh"

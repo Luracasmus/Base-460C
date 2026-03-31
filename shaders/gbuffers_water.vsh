@@ -1,5 +1,5 @@
-#define TEXTURE
-#define LIGHT
-#define CHUNK_OFFSET
+#define TEXTURED
+#define LIT
 #define TERRAIN
+#define TRANSLUCENT
 #include "/prog/generic.vsh"

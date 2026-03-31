@@ -1,5 +1,5 @@
-#define TEXTURE
+#define TEXTURED
 #define ALPHA_CHECK
-#define ALPHA_BLEND
+#define TRANSLUCENT
 #define FOG
 #include "/prog/generic.fsh"

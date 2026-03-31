@@ -1,13 +1,13 @@
 #include "/prelude/core.glsl"
 
 /* RENDERTARGETS: 0 */
-#ifdef ALPHA_BLEND
+#ifdef TRANSLUCENT
 	layout(location = 0) out vec4 colortex0;
 #else
 	layout(location = 0) out vec3 colortex0;
 #endif
 
-#ifdef TEXTURE
+#ifdef TEXTURED
 	uniform sampler2D gtexture;
 
 	#ifdef ALPHA_CHECK
@@ -15,17 +15,8 @@
 	#endif
 #endif
 
-in VertexData {
-	#ifdef TINT_ALPHA
-		layout(location = 0, component = 0) vec4 tint;
-	#else
-		layout(location = 0, component = 0) vec3 tint;
-	#endif
-
-	#ifdef TEXTURE
-		layout(location = 1, component = 0) vec2 coord;
-	#endif
-} v;
+in
+#include "/lib/v_data_generic.glsl"
 
 #ifdef FOG
 	uniform float far, fogStart, fogEnd, viewHeight, viewWidth;
@@ -38,8 +29,18 @@ in VertexData {
 #endif
 
 void main() {
-	#ifdef TEXTURE
-		#if defined ALPHA_CHECK || defined ALPHA_BLEND
+	#ifdef TERRAIN
+		immut vec3 tint = v.tint;
+	#else
+		#ifdef TRANSLUCENT
+			immut vec4 tint = unpackUnorm4x8(v.unorm4x8_tint);
+		#else
+			immut vec3 tint = unpackUnorm4x8(v.unorm4x8_tint).rgb;
+		#endif
+	#endif
+
+	#ifdef TEXTURED
+		#if defined ALPHA_CHECK || defined TRANSLUCENT
 			vec4 tex = texture(gtexture, v.coord);
 		#else
 			vec3 tex = texture(gtexture, v.coord).rgb;
@@ -49,15 +50,31 @@ void main() {
 			if (tex.a < alphaTestRef) discard;
 		#endif
 
-		tex.rgb *= v.tint.rgb;
+		#ifdef TRANSLUCENT
+			#ifdef TERRAIN
+				#ifdef IRIS_FEATURE_FADE_VARIABLE
+					tex *= vec4(tint, v.fade);
+				#else
+					tex.rgb *= tint;
+				#endif
+			#else
+				tex *= tint;
+			#endif
+		#else
+			tex.rgb *= tint;
+		#endif
 
-		#ifdef ALPHA_BLEND
+		#if !defined TRANSLUCENT && defined TERRAIN && defined IRIS_FEATURE_FADE_VARIABLE
+			tex.rgb = mix(fogColor, tex.rgb, v.fade);
+		#endif
+
+		#ifdef TRANSLUCENT
 			colortex0 = tex;
 		#else
 			colortex0 = tex.rgb;
 		#endif
 	#else
-		colortex0 = v.tint;
+		colortex0 = tint;
 	#endif
 
 	#ifdef FOG

@@ -8,9 +8,8 @@ uniform float viewHeight, viewWidth;
 uniform vec3 fogColor, skyColor, upPosition;
 uniform mat4 gbufferProjectionInverse;
 
-in VertexData {
-	layout(location = 0, component = 0) flat vec3 tint;
-} v;
+in
+#include "/lib/v_data_generic.glsl"
 
 // The code below is largely based on:
 // https://github.com/shaderLABS/Base-330/blob/main/shaders/gbuffers_skybasic.fsh
@@ -35,6 +34,6 @@ void main() {
 	colortex0 = sky(normalize(view));
 
 	if (renderStage == MC_RENDER_STAGE_STARS) {
-		colortex0 += v.tint; // todo!() this seems to differ a bit from Vanilla
+		colortex0 += unpackUnorm4x8(v.unorm4x8_tint).rgb; // todo!() this seems to differ a bit from Vanilla
 	}
 }

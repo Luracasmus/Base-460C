@@ -1,3 +1,3 @@
-#define TEXTURE
-#define CHUNK_OFFSET
+#define TEXTURED
+#define TRANSLUCENT
 #include "/prog/generic.vsh"

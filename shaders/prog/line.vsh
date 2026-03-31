@@ -8,12 +8,11 @@ uniform mat4 modelViewMatrix, projectionMatrix;
 in vec3 vaNormal, vaPosition;
 in vec4 vaColor;
 
-out VertexData {
-	layout(location = 0, component = 0) vec4 tint;
-} v;
+out
+#include "/lib/v_data_generic.glsl"
 
 void main() {
-	v.tint = vaColor;
+	v.unorm4x8_tint = packUnorm4x8(vaColor);
 
 	immut vec3 model = vaPosition + chunkOffset;
 

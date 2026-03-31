@@ -1,2 +1,2 @@
-#define TINT_ALPHA
+#define TRANSLUCENT
 #include "/prog/generic.vsh"

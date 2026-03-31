@@ -1,2 +1,2 @@
-#define TEXTURE
+#define TEXTURED
 #include "/prog/generic.fsh"
