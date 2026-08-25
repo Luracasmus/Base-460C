@@ -31,17 +31,17 @@ in
 	}
 #endif
 
-void main() {
-	#ifdef TERRAIN
-		immut vec3 tint = v.tint;
+#ifdef TERRAIN
+	vec3 get_tint() { return v.tint; }
+#else
+	#ifdef TRANSLUCENT
+		vec4 get_tint() { return unpackUnorm4x8(v.unorm4x8_tint); }
 	#else
-		#ifdef TRANSLUCENT
-			immut vec4 tint = unpackUnorm4x8(v.unorm4x8_tint);
-		#else
-			immut vec3 tint = unpackUnorm4x8(v.unorm4x8_tint).rgb;
-		#endif
+		vec3 get_tint() { return unpackUnorm4x8(v.unorm4x8_tint).rgb; }
 	#endif
+#endif
 
+void main() {
 	#ifdef TEXTURED
 		#if defined ALPHA_CHECK || defined TRANSLUCENT
 			vec4 tex = texture(gtexture, v.coord);
@@ -56,15 +56,15 @@ void main() {
 		#ifdef TRANSLUCENT
 			#ifdef TERRAIN
 				#ifdef IRIS_FEATURE_FADE_VARIABLE
-					tex *= vec4(tint, v.fade);
+					tex *= vec4(get_tint(), v.fade);
 				#else
-					tex.rgb *= tint;
+					tex.rgb *= get_tint();
 				#endif
 			#else
-				tex *= tint;
+				tex *= get_tint();
 			#endif
 		#else
-			tex.rgb *= tint;
+			tex.rgb *= get_tint();
 		#endif
 
 		#if !defined TRANSLUCENT && defined TERRAIN && defined IRIS_FEATURE_FADE_VARIABLE
@@ -77,7 +77,7 @@ void main() {
 			colortex0 = tex.rgb;
 		#endif
 	#else
-		colortex0 = tint;
+		colortex0 = get_tint();
 	#endif
 
 	#ifdef FOG
